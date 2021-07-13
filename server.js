@@ -10,6 +10,9 @@ const User = require('./modules/User')
 const app = express();
 app.use(cors());
 
+// Middleware: checkpoint to parse the body of the request
+app.use(express.json())
+
 const PORT = process.env.PORT || 3002;
 
 mongoose.connect(`${process.env.MONGODB}/bestBooks`, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -38,14 +41,14 @@ function seedUserCollection() {
 // seedUserCollection();
 
 
-// http://localhost:3001/books?email=taariq.zyad@gmail.com
+
 app.get('/books', getBooksHandler);
 
 function getBooksHandler(request, response) {
 
   const email = request.query.email;
 
-  myUserModel.find({ email: email }, function (error, items) {
+  User.find({ email: email }, (error, items) => {
     if (error) {
       response.status(500).send('NOT FOUND')
     } else {
@@ -54,6 +57,65 @@ function getBooksHandler(request, response) {
   })
 };
 
+
+
+app.post('/books', postBooksHandler);
+
+function postBooksHandler(request, response) {
+
+  console.log(request.body);
+  let { email, bookName, bookDescription, bookStatus, bookImg } = request.body;
+
+  User.find({ email: email }, (error, items) => {
+    if (error) {
+      response.status(500).send('NOT FOUND')
+    }
+    else {
+
+      items[0].books.push({
+        name: bookName,
+        description: bookDescription,
+        status: bookStatus,
+        img: bookImg,
+      })
+
+      items[0].save();
+
+      response.status(200).send(items[0].books)
+    }
+  })
+
+}
+
+
+app.delete('/books/:id', deleteBooksHandler)
+
+
+function deleteBooksHandler(request, response) {
+
+  let id = request.params.id;
+  let email = request.query.email;
+
+  User.find({ email: email }, (error, items) => {
+    if (error) {
+      response.status(500).send('NOT FOUND')
+    }
+    else {
+
+      let newBookArray = items[0].books.filter(val => {
+
+        return val._id.toString() !== id
+
+      })
+      items[0].books = newBookArray
+      console.log('after deleting', items[0].books)
+
+      items[0].save();
+      response.status(200).send(items[0].books)
+    }
+
+  })
+}
 app.get('/', homePageHandler);
 
 function homePageHandler(request, response) {
