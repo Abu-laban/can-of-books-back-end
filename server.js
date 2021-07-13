@@ -3,33 +3,20 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
 
+const mongoose = require('mongoose');
+const User = require('./modules/User')
 
 const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3002;
 
-mongoose.connect('mongodb://localhost:27017/bestBooks', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`${process.env.MONGODB}/bestBooks`, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const bookSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  status: String,
-  img: String
-});
-
-const userSchema = new mongoose.Schema({
-  email: String,
-  books: [bookSchema]
-});
-
-
-const myUserModel = mongoose.model('user', userSchema);
 
 function seedUserCollection() {
-  const tariq = new myUserModel({
+  const tariq = new User({
     email: 'taariq.zyad@gmail.com',
     books: [
       {
