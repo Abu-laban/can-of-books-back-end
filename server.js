@@ -15,7 +15,7 @@ app.use(express.json())
 
 const PORT = process.env.PORT || 3002;
 
-mongoose.connect(`${process.env.MONGODB}/bestBooks`, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`${process.env.MONGODB}`, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 function seedUserCollection() {
@@ -116,6 +116,48 @@ function deleteBooksHandler(request, response) {
 
   })
 }
+
+app.put('/books/:id', updateBooksHandler)
+
+
+function updateBooksHandler(request, response) {
+
+  let id = request.params.id;
+
+  let { email, bookName, bookDescription, bookStatus, bookImg } = request.body;
+
+  User.findOne({ email: email }, (error, items) => {
+    if (error) {
+      response.status(500).send('NOT FOUND')
+    }
+    else {
+
+      items.books.map(book => {
+
+
+        if (book._id.toString() === id) {
+
+          book.name = bookName;
+          book.description = bookDescription;
+          book.status = bookStatus;
+          book.img = bookImg;
+
+          return book;
+        }
+        else {
+          return book;
+        }
+      })
+
+      items.save();
+
+      response.status(200).send(items.books);
+
+    }
+
+  })
+}
+
 app.get('/', homePageHandler);
 
 function homePageHandler(request, response) {

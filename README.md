@@ -2,7 +2,7 @@
 
 **Author**: **Tariq** _Abu-laban_ & **Jana** _Abdelkader_
 
-**Version**: 1.0.0
+**Version**: 1.0.2
 
 ## Overview
 
@@ -21,6 +21,7 @@
 - Express
 - MongoDb
 - Mongoose
+- Atlas
 
 ## Change Log
 
@@ -41,6 +42,13 @@
   - Start time: 2:30pm
   - Finish time: 6:10pm
   - Actual time needed to complete: 3 hours 40 minutes
+
+- Name of feature: Lab 14 - Tariq & Jana Pair Program (update Books)
+
+  - Estimate of time needed to complete: 3 hours
+  - Start time: 2:00pm
+  - Finish time: 4:20pm
+  - Actual time needed to complete: 2 hours 20 minutes
 
 ## Credit and Collaborations
 
